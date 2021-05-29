@@ -2,19 +2,27 @@
     let totalCount = null;
     let remainingCount = null;
     let renderedCount = 0;
-    const optimalPortion = 1000;
+    const optimalPortion = 1_000;
     const body = document.body;
-    const input = body.querySelector('input');
+    const inputEl = body.querySelector('input');
     const resultEl = body.querySelector('.result');
     const renderedSpansEl = body.querySelector('.renderedSpans > span');
+    const clearBtnEl = body.querySelector('.header > span > button');
     const IOAOptions = {
         threshold: 1
     };
 
     const init = () => {
         renderSpans();
+
+        clearBtnEl.addEventListener('click', () => {
+            resetRenderedCount();
+            updateAndRenderRenderedSpansCount(0);
+            resetInputValueToZero();
+            cleanResultBlock();
+        })
         
-        input.addEventListener('input', event => {
+        inputEl.addEventListener('input', () => {
             try {
                 if (getCurrentInputValue() < 0) throw new Error('You should enter only positive number!');
 
@@ -30,7 +38,6 @@
     }
 
     const updateAndRenderRenderedSpansCount = value => {
-        console.warn('updateAndRenderRenderedSpansCount -', value);
         renderedCount += Number(value);
         renderedSpansEl.innerHTML = renderedCount;
     }
@@ -40,6 +47,9 @@
     }
 
     const calculateRemainingCount = () => {
+        if (remainingCount < optimalPortion) {
+            return remainingCount -= remainingCount;
+        }
         return remainingCount -= optimalPortion;
     }
 
@@ -53,11 +63,11 @@
     }
 
     const resetInputValueToZero = () => {
-        input.value = 0;
+        inputEl.value = 0;
     }
 
     const getCurrentInputValue = () => {
-        return Number(input.value);
+        return Number(inputEl.value);
     }
 
     const getRandomValueInRange = (max = 9) => {
@@ -105,15 +115,13 @@
             document.querySelectorAll('.result > span').forEach(span => observer.unobserve(span))
         }
 
-        console.log(size);
-
         updateAndRenderRenderedSpansCount(size);
     }
 
     const observer = new IntersectionObserver( entries => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                renderPortionSpans();
+                renderSpans();
             }
         })
     }, IOAOptions );
