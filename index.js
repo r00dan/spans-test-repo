@@ -2,24 +2,24 @@
     let totalCount = null;
     let remainingCount = null;
     let renderedCount = 0;
-    const optimalPortion = 1_000;
+    const optimalPortion = 2_500;
     const body = document.body;
     const inputEl = body.querySelector('input');
     const resultEl = body.querySelector('.result');
-    const renderedSpansEl = body.querySelector('.renderedSpans > span');
+    const renderedSpansEl = body.querySelector('.rendered-spans > span');
+    const chunkSizeEl = body.querySelector('.chunk-size > span');
     const clearBtnEl = body.querySelector('.header > span > button');
     const IOAOptions = {
         threshold: 1
     };
 
     const init = () => {
+        chunkSizeEl.innerHTML = optimalPortion;
+
         renderSpans();
 
         clearBtnEl.addEventListener('click', () => {
-            resetRenderedCount();
-            updateAndRenderRenderedSpansCount(0);
-            resetInputValueToZero();
-            cleanResultBlock();
+            resetAll();
         })
         
         inputEl.addEventListener('input', () => {
@@ -32,9 +32,16 @@
                 renderSpans();
             } catch (e) {
                 alert(e);
-                resetInputValueToZero();
+                resetAll();
             }
         })
+    }
+
+    const resetAll = () => {
+        resetRenderedCount();
+        updateAndRenderRenderedSpansCount(0);
+        resetInputValueToZero();
+        cleanResultBlock();
     }
 
     const updateAndRenderRenderedSpansCount = value => {
